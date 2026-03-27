@@ -29,7 +29,6 @@ const state = {
 };
 
 const aboutButton = document.querySelector("#about-button");
-const githubButton = document.querySelector("#github-button");
 const helpButton = document.querySelector("#help-button");
 const refreshButton = document.querySelector("#refresh-button");
 const clearButton = document.querySelector("#clear-button");
@@ -104,8 +103,6 @@ aboutButton.addEventListener("click", () => {
   }
   renderInfoPanels();
 });
-
-githubButton.addEventListener("click", () => void openProjectRepo());
 
 helpButton.addEventListener("click", () => {
   state.helpOpen = !state.helpOpen;
@@ -308,16 +305,6 @@ function closeInfoModal(target = "all") {
     state.helpOpen = false;
   }
   renderInfoPanels();
-}
-
-async function openProjectRepo() {
-  try {
-    await chrome.tabs.create({
-      url: PROJECT_URL,
-    });
-  } catch {
-    window.open(PROJECT_URL, "_blank", "noopener");
-  }
 }
 
 function renderOverview(errorMessage) {
