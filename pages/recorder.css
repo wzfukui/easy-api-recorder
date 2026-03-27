@@ -375,6 +375,7 @@ h2 {
   display: flex;
   align-items: flex-end;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .tab-button {
@@ -402,12 +403,19 @@ h2 {
 .search-field {
   display: grid;
   gap: 6px;
-  min-width: min(34rem, 90vw);
+  min-width: min(28rem, 74vw);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8f5930;
+}
+
+.list-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .toolbar-note {
