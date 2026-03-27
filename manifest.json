@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "接口抓包助手",
+  "description": "基于 chrome.debugger 抓取当前标签页中的 XHR、Fetch 和文档请求，并导出 JSON 或 HAR。",
+  "version": "0.1.0",
+  "permissions": [
+    "debugger",
+    "storage",
+    "tabs"
+  ],
+  "action": {
+    "default_title": "接口抓包助手",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

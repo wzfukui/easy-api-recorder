@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>接口抓包助手</title>
+    <link rel="stylesheet" href="./recorder.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="masthead">
+        <div class="masthead-copy">
+          <p class="eyebrow">结果页</p>
+          <h1>查看抓包结果</h1>
+          <p class="subtitle">
+            先浏览列表，再把有用条目加入导出队列；需要时再打开右侧详情查看请求头、响应头和 body。
+          </p>
+        </div>
+        <div class="masthead-actions">
+          <button id="help-button">帮助</button>
+          <button id="refresh-button">刷新</button>
+          <button id="clear-button">清空会话</button>
+        </div>
+      </section>
+
+      <section class="overview-strip">
+        <div class="overview-card strong">
+          <div class="overview-label">会话</div>
+          <div id="session-title" class="overview-value">暂无会话</div>
+          <div id="session-url" class="overview-meta">-</div>
+        </div>
+        <div class="overview-card compact">
+          <div class="overview-label">状态</div>
+          <div id="session-status" class="overview-value">空闲</div>
+          <div id="session-updated" class="overview-meta">-</div>
+        </div>
+        <div class="overview-card compact">
+          <div class="overview-label">已抓取</div>
+          <div id="session-count" class="overview-value">0</div>
+          <div id="visible-count" class="overview-meta">可见 0 条</div>
+        </div>
+        <div class="overview-card compact">
+          <div class="overview-label">导出队列</div>
+          <div id="queue-count" class="overview-value">0</div>
+          <div id="queue-summary" class="overview-meta">队列为空</div>
+        </div>
+      </section>
+
+      <section id="help-panel" class="help-panel hidden">
+        <div class="help-grid">
+          <div class="help-card">
+            <strong>抓包范围</strong>
+            <span>“抓包设置”决定录制阶段哪些内容会进入当前会话。</span>
+          </div>
+          <div class="help-card">
+            <strong>快速筛选</strong>
+            <span>下面的类型筛选只影响当前浏览视图，不会删除原始数据。</span>
+          </div>
+          <div class="help-card">
+            <strong>规则优先级</strong>
+            <span>先检查资源类型，再执行包含规则，最后执行排除规则；一旦命中排除规则就会被跳过。</span>
+          </div>
+          <div class="help-card">
+            <strong>导出队列</strong>
+            <span>把有用条目加入“导出队列”后集中导出；明显噪音可以直接在列表里批量删除。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-panel">
+        <details class="settings-fold">
+          <summary>
+            <div>
+              <p class="eyebrow small">抓包设置</p>
+              <h2>范围、规则与优先级</h2>
+            </div>
+            <div class="settings-summary-block">
+              <span id="settings-status" class="status-note">已保存</span>
+              <span id="settings-summary" class="summary-text">文档、XHR、Fetch</span>
+            </div>
+          </summary>
+
+          <div class="fold-body">
+            <div class="section-head">
+              <div>
+                <p class="section-copy">
+                  规则执行顺序是：1）先判断资源类型是否启用；2）如果存在包含规则，URL 必须至少命中一条；
+                  3）最后执行排除规则，一旦命中就以排除为准。
+                </p>
+              </div>
+              <div class="section-actions">
+                <button id="reset-settings-button">恢复默认</button>
+                <button id="apply-settings-button" class="primary">应用设置</button>
+              </div>
+            </div>
+
+            <div class="settings-grid">
+              <div class="settings-block">
+                <h3>资源类型</h3>
+                <div id="resource-type-grid" class="resource-type-grid"></div>
+              </div>
+
+              <div class="settings-block">
+                <h3>URL 规则</h3>
+                <label class="field">
+                  <span>包含规则</span>
+                  <textarea
+                    id="include-rules-input"
+                    rows="5"
+                    placeholder="每行一条规则&#10;示例：*/api/*&#10;示例：*token*"
+                  ></textarea>
+                </label>
+                <label class="field">
+                  <span>排除规则</span>
+                  <textarea
+                    id="exclude-rules-input"
+                    rows="5"
+                    placeholder="每行一条规则&#10;示例：*.png&#10;示例：*analytics*"
+                  ></textarea>
+                </label>
+                <label class="binary-inline">
+                  <input id="binary-bodies-checkbox" type="checkbox" />
+                  <span>同时抓取二进制响应体</span>
+                </label>
+                <div class="rules-help">
+                  <strong>优先级</strong>
+                  <span>如果配置了包含规则，没有命中的 URL 会先被跳过；排除规则随后执行，命中后仍然会被剔除。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="workspace-panel">
+        <div class="workspace-toolbar">
+          <div class="tab-switcher">
+            <button id="captured-tab-button" class="tab-button active">
+              已抓取
+              <span id="captured-tab-count" class="tab-count">0</span>
+            </button>
+            <button id="queue-tab-button" class="tab-button">
+              导出队列
+              <span id="queue-tab-count" class="tab-count">0</span>
+            </button>
+          </div>
+          <div id="result-type-filter-bar" class="filter-strip"></div>
+          <div class="list-tools">
+            <label class="search-field">
+              <span>搜索</span>
+              <input
+                id="search-input"
+                type="search"
+                placeholder="搜索 URL、方法、状态码、MIME 或错误文本"
+              />
+            </label>
+          </div>
+        </div>
+
+        <p id="error-banner" class="error hidden"></p>
+
+        <div id="captured-view" class="list-view">
+          <div id="request-list" class="request-list"></div>
+          <div class="footer-bar">
+            <div class="footer-meta">
+              <label class="select-all">
+                <input id="select-all-checkbox" type="checkbox" />
+                <span>选择可见项</span>
+              </label>
+              <label class="select-all">
+                <input id="hide-queued-checkbox" type="checkbox" checked />
+                <span>隐藏已入队条目</span>
+              </label>
+              <span id="selection-summary" class="toolbar-note">已选 0 条</span>
+            </div>
+            <div class="footer-actions">
+              <button id="add-to-queue-button" class="primary">加入导出队列</button>
+              <button id="delete-selected-button">删除选中项</button>
+              <button id="clear-selection-button">清空选择</button>
+              <button id="export-all-json-button">导出全部 JSON</button>
+              <button id="export-all-har-button">导出全部 HAR</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="queue-view" class="list-view hidden">
+          <div id="queue-list" class="request-list"></div>
+          <div class="footer-bar">
+            <div class="footer-meta">
+              <span id="queue-view-summary" class="toolbar-note">队列为空</span>
+            </div>
+            <div class="footer-actions">
+              <button id="export-queue-json-button" class="primary">导出队列 JSON</button>
+              <button id="export-queue-har-button">导出队列 HAR</button>
+              <button id="clear-queue-button">清空队列</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="drawer-scrim" class="drawer-scrim hidden"></div>
+
+    <aside id="detail-drawer" class="detail-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow small">条目详情</p>
+          <h2 id="detail-title">未选择条目</h2>
+          <p id="detail-subtitle" class="drawer-copy">请先从列表里选择一条请求。</p>
+        </div>
+        <div class="drawer-actions">
+          <button id="close-drawer-button">关闭</button>
+        </div>
+      </div>
+
+      <div id="empty-detail" class="empty-detail">
+        请先从任意列表里选择一条抓包记录。只有在你需要查看请求头、响应头和 body 时，右侧抽屉才会展开。
+      </div>
+
+      <div id="detail-panel" class="drawer-panel hidden">
+        <div class="detail-summary">
+          <div class="detail-inline-card">
+            <div class="detail-label">类型</div>
+            <div id="detail-type" class="detail-value">-</div>
+          </div>
+          <div class="detail-inline-card">
+            <div class="detail-label">方法</div>
+            <div id="detail-method" class="detail-value">-</div>
+          </div>
+          <div class="detail-inline-card">
+            <div class="detail-label">状态</div>
+            <div id="detail-status" class="detail-value">-</div>
+          </div>
+        </div>
+
+        <div class="detail-card detail-card-wide">
+          <div class="detail-label">URL</div>
+          <div id="detail-url" class="detail-value mono">-</div>
+        </div>
+
+        <section class="detail-section">
+          <h3>请求头</h3>
+          <pre id="detail-request-headers" class="code-block"></pre>
+        </section>
+
+        <section class="detail-section">
+          <h3>响应头</h3>
+          <pre id="detail-response-headers" class="code-block"></pre>
+        </section>
+
+        <section class="detail-section">
+          <h3>请求体</h3>
+          <pre id="detail-request-body" class="code-block"></pre>
+        </section>
+
+        <section class="detail-section">
+          <h3>响应体</h3>
+          <pre id="detail-response-body" class="code-block"></pre>
+        </section>
+      </div>
+    </aside>
+
+    <script type="module" src="./recorder.js"></script>
+  </body>
+</html>

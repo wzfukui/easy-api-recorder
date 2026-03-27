@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>接口抓包助手</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <section class="panel">
+        <div class="eyebrow">接口抓包助手</div>
+        <div class="hero">
+          <div>
+            <h1>当前标签抓包</h1>
+            <p class="description">
+              从这里快速开始录制。抓包范围和 URL 规则统一在结果页里配置，这里只保留高频操作。
+            </p>
+          </div>
+        </div>
+
+        <section class="tab-card">
+          <div class="tab-card-head">
+            <span class="mini-label">标签页</span>
+            <span id="recording-status" class="status-pill">空闲</span>
+          </div>
+          <div id="tab-title" class="tab-title">加载中...</div>
+          <div class="meta-row">
+            <div class="meta-chip">
+              <span class="mini-label">条目数</span>
+              <strong id="entry-count">0</strong>
+            </div>
+            <div class="meta-chip">
+              <span class="mini-label">范围</span>
+              <strong id="scope-summary">加载中...</strong>
+            </div>
+          </div>
+        </section>
+
+        <details class="scope-fold">
+          <summary>当前抓包范围</summary>
+          <p class="fold-copy">
+            完整抓包配置统一在结果页里管理。当前范围：
+            <span id="scope-detail">加载中...</span>
+          </p>
+        </details>
+
+        <p id="error-text" class="error hidden"></p>
+
+        <div class="actions">
+          <button id="start-button" class="primary">开始录制</button>
+          <button id="stop-button">停止</button>
+          <button id="open-button">打开结果页</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>
