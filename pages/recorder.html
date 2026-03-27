@@ -15,9 +15,9 @@
           <p class="subtitle">
             先浏览列表，再把有用条目加入导出队列；需要时再打开右侧详情查看请求头、响应头和 body。
           </p>
-          <div id="recorder-version" class="build-note">版本 v0.1.5</div>
         </div>
         <div class="masthead-actions">
+          <span id="recorder-version" class="build-note inline">版本 v0.1.6</span>
           <button id="about-button">关于</button>
           <button id="github-button">GitHub</button>
           <button id="help-button">帮助</button>
@@ -46,52 +46,6 @@
           <div class="overview-label">导出队列</div>
           <div id="queue-count" class="overview-value">0</div>
           <div id="queue-summary" class="overview-meta">队列为空</div>
-        </div>
-      </section>
-
-      <section id="help-panel" class="help-panel hidden">
-        <div class="help-grid">
-          <div class="help-card">
-            <strong>抓包范围</strong>
-            <span>“抓包设置”决定录制阶段哪些内容会进入当前会话。</span>
-          </div>
-          <div class="help-card">
-            <strong>快速筛选</strong>
-            <span>下面的类型筛选只影响当前浏览视图，不会删除原始数据。</span>
-          </div>
-          <div class="help-card">
-            <strong>规则优先级</strong>
-            <span>先检查资源类型，再执行包含规则，最后执行排除规则；一旦命中排除规则就会被跳过。</span>
-          </div>
-          <div class="help-card">
-            <strong>导出队列</strong>
-            <span>把有用条目加入“导出队列”后集中导出；明显噪音可以直接在列表里批量删除。</span>
-          </div>
-        </div>
-      </section>
-
-      <section id="about-panel" class="help-panel hidden">
-        <div class="help-grid about-grid">
-          <div class="help-card">
-            <strong>产品名称</strong>
-            <span>接口抓包助手</span>
-          </div>
-          <div class="help-card">
-            <strong>当前版本</strong>
-            <span id="about-version">v0.1.5</span>
-          </div>
-          <div class="help-card">
-            <strong>开发者</strong>
-            <span>wzfukui</span>
-          </div>
-          <div class="help-card">
-            <strong>开发单位</strong>
-            <span>上海雾帜智能科技有限公司（雾帜智能公司）</span>
-          </div>
-          <div class="help-card repo-card">
-            <strong>项目地址</strong>
-            <span id="about-repo-url" class="repo-link">https://github.com/wzfukui/easy-api-recorder</span>
-          </div>
         </div>
       </section>
 
@@ -226,6 +180,72 @@
         </div>
       </section>
     </main>
+
+    <div id="help-modal" class="modal-layer hidden" aria-hidden="true">
+      <div class="modal-scrim" data-close-modal="help"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow small">帮助</p>
+            <h2 id="help-modal-title">使用说明</h2>
+          </div>
+          <button id="close-help-modal-button">关闭</button>
+        </div>
+        <div class="help-grid">
+          <div class="help-card">
+            <strong>抓包范围</strong>
+            <span>“抓包设置”决定录制阶段哪些内容会进入当前会话。</span>
+          </div>
+          <div class="help-card">
+            <strong>快速筛选</strong>
+            <span>下面的类型筛选只影响当前浏览视图，不会删除原始数据。</span>
+          </div>
+          <div class="help-card">
+            <strong>规则优先级</strong>
+            <span>先检查资源类型，再执行包含规则，最后执行排除规则；一旦命中排除规则就会被跳过。</span>
+          </div>
+          <div class="help-card">
+            <strong>导出队列</strong>
+            <span>把有用条目加入“导出队列”后集中导出；明显噪音可以直接在列表里批量删除。</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="about-modal" class="modal-layer hidden" aria-hidden="true">
+      <div class="modal-scrim" data-close-modal="about"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow small">关于</p>
+            <h2 id="about-modal-title">程序信息</h2>
+          </div>
+          <button id="close-about-modal-button">关闭</button>
+        </div>
+        <div class="help-grid about-grid">
+          <div class="help-card">
+            <strong>产品名称</strong>
+            <span>接口抓包助手</span>
+          </div>
+          <div class="help-card">
+            <strong>当前版本</strong>
+            <span id="about-version">v0.1.6</span>
+          </div>
+          <div class="help-card">
+            <strong>开发者</strong>
+            <span>wzfukui</span>
+          </div>
+          <div class="help-card">
+            <strong>开发单位</strong>
+            <span>上海雾帜智能科技有限公司（雾帜智能公司）</span>
+          </div>
+          <div class="help-card repo-card">
+            <strong>项目地址</strong>
+            <span id="about-repo-url" class="repo-link">https://github.com/wzfukui/easy-api-recorder</span>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <div id="drawer-scrim" class="drawer-scrim hidden"></div>
 

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "接口抓包助手",
   "description": "基于 chrome.debugger 抓取当前标签页中的 XHR、Fetch 和文档请求，并导出 JSON 或 HAR。",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "permissions": [
     "debugger",
     "storage",

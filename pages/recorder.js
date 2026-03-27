@@ -65,10 +65,12 @@ const queueSummaryElement = document.querySelector("#queue-summary");
 const selectionSummaryElement = document.querySelector("#selection-summary");
 const queueViewSummaryElement = document.querySelector("#queue-view-summary");
 const errorBannerElement = document.querySelector("#error-banner");
-const aboutPanelElement = document.querySelector("#about-panel");
+const aboutModalElement = document.querySelector("#about-modal");
 const aboutRepoUrlElement = document.querySelector("#about-repo-url");
 const aboutVersionElement = document.querySelector("#about-version");
-const helpPanelElement = document.querySelector("#help-panel");
+const helpModalElement = document.querySelector("#help-modal");
+const closeAboutModalButton = document.querySelector("#close-about-modal-button");
+const closeHelpModalButton = document.querySelector("#close-help-modal-button");
 const resultTypeFilterBarElement = document.querySelector("#result-type-filter-bar");
 const capturedViewElement = document.querySelector("#captured-view");
 const queueViewElement = document.querySelector("#queue-view");
@@ -111,6 +113,8 @@ helpButton.addEventListener("click", () => {
   }
   renderInfoPanels();
 });
+closeAboutModalButton.addEventListener("click", () => closeInfoModal("about"));
+closeHelpModalButton.addEventListener("click", () => closeInfoModal("help"));
 refreshButton.addEventListener("click", () => void refresh());
 clearButton.addEventListener("click", () => void clearSession());
 applySettingsButton.addEventListener("click", () => void applySettings());
@@ -151,6 +155,26 @@ binaryBodiesCheckbox.addEventListener("change", () => {
 });
 closeDrawerButton.addEventListener("click", closeDrawer);
 drawerScrimElement.addEventListener("click", closeDrawer);
+for (const element of document.querySelectorAll("[data-close-modal]")) {
+  element.addEventListener("click", () => {
+    closeInfoModal(element.dataset.closeModal);
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  if (state.aboutOpen || state.helpOpen) {
+    closeInfoModal();
+    return;
+  }
+
+  if (state.activeEntryId) {
+    closeDrawer();
+  }
+});
 
 chrome.runtime.onMessage.addListener((message) => {
   if (message?.type === "recorder/state-changed") {
@@ -264,10 +288,23 @@ function renderInfoPanels() {
   recorderVersionElement.textContent = `版本 v${APP_VERSION}`;
   aboutVersionElement.textContent = `v${APP_VERSION}`;
   aboutRepoUrlElement.textContent = PROJECT_URL;
-  aboutPanelElement.classList.toggle("hidden", !state.aboutOpen);
-  helpPanelElement.classList.toggle("hidden", !state.helpOpen);
-  helpButton.textContent = state.helpOpen ? "收起帮助" : "帮助";
-  aboutButton.textContent = state.aboutOpen ? "收起关于" : "关于";
+  aboutModalElement.classList.toggle("hidden", !state.aboutOpen);
+  aboutModalElement.setAttribute("aria-hidden", String(!state.aboutOpen));
+  helpModalElement.classList.toggle("hidden", !state.helpOpen);
+  helpModalElement.setAttribute("aria-hidden", String(!state.helpOpen));
+  aboutButton.setAttribute("aria-expanded", String(state.aboutOpen));
+  helpButton.setAttribute("aria-expanded", String(state.helpOpen));
+  document.body.classList.toggle("modal-open", state.aboutOpen || state.helpOpen);
+}
+
+function closeInfoModal(target = "all") {
+  if (target === "about" || target === "all") {
+    state.aboutOpen = false;
+  }
+  if (target === "help" || target === "all") {
+    state.helpOpen = false;
+  }
+  renderInfoPanels();
 }
 
 async function openProjectRepo() {
