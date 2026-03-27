@@ -66,7 +66,8 @@ const selectionSummaryElement = document.querySelector("#selection-summary");
 const queueViewSummaryElement = document.querySelector("#queue-view-summary");
 const errorBannerElement = document.querySelector("#error-banner");
 const aboutModalElement = document.querySelector("#about-modal");
-const aboutRepoUrlElement = document.querySelector("#about-repo-url");
+const aboutRepoLinkElement = document.querySelector("#about-repo-link");
+const aboutRepoNameElement = document.querySelector("#about-repo-name");
 const aboutVersionElement = document.querySelector("#about-version");
 const helpModalElement = document.querySelector("#help-modal");
 const closeAboutModalButton = document.querySelector("#close-about-modal-button");
@@ -287,7 +288,9 @@ function render(errorMessage) {
 function renderInfoPanels() {
   recorderVersionElement.textContent = `版本 v${APP_VERSION}`;
   aboutVersionElement.textContent = `v${APP_VERSION}`;
-  aboutRepoUrlElement.textContent = PROJECT_URL;
+  aboutRepoLinkElement.href = PROJECT_URL;
+  aboutRepoLinkElement.title = PROJECT_URL;
+  aboutRepoNameElement.textContent = PROJECT_URL.replace("https://github.com/", "");
   aboutModalElement.classList.toggle("hidden", !state.aboutOpen);
   aboutModalElement.setAttribute("aria-hidden", String(!state.aboutOpen));
   helpModalElement.classList.toggle("hidden", !state.helpOpen);
