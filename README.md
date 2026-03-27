@@ -10,6 +10,20 @@
 
 `开始录制 -> 走业务流程 -> 挑选请求 -> 导出 -> 交给模型或工程师继续开发`
 
+## 界面预览
+
+### 结果页总览
+
+![结果页总览](docs/screenshots/recorder-overview.jpg)
+
+### 抓包列表与类型筛选
+
+![抓包列表与类型筛选](docs/screenshots/captured-list.jpg)
+
+### 底部批量操作区
+
+![底部批量操作区](docs/screenshots/batch-actions.jpg)
+
 ## 核心能力
 
 - 选择当前标签页并开始录制
@@ -187,7 +201,11 @@
 │   ├── recorder.css
 │   └── recorder.js
 └── docs
-    └── architecture.md
+    ├── architecture.md
+    └── screenshots
+        ├── batch-actions.jpg
+        ├── captured-list.jpg
+        └── recorder-overview.jpg
 ```
 
 ## 当前限制
