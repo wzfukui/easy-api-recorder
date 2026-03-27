@@ -1,11 +1,14 @@
 import { normalizeCapturePreferences, summarizeEnabledResourceTypes } from "./lib/shared.js";
 
+const APP_VERSION = chrome.runtime.getManifest().version;
+
 const state = {
   currentTab: null,
   recorderState: null,
   capturePreferences: normalizeCapturePreferences(),
 };
 
+const popupVersionElement = document.querySelector("#popup-version");
 const tabTitleElement = document.querySelector("#tab-title");
 const recordingStatusElement = document.querySelector("#recording-status");
 const entryCountElement = document.querySelector("#entry-count");
@@ -60,6 +63,7 @@ function render() {
       ? state.recorderState.sessions.find((session) => session.tabId === currentTab.id)
       : null;
 
+  popupVersionElement.textContent = `版本 v${APP_VERSION}`;
   tabTitleElement.textContent = currentTab?.title || "当前没有活动标签页";
   recordingStatusElement.textContent = currentSession?.isRecording ? "录制中" : "空闲";
   entryCountElement.textContent = String(currentSession?.entryCount || 0);

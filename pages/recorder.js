@@ -7,6 +7,8 @@ import {
   summarizeEnabledResourceTypes,
 } from "../lib/shared.js";
 
+const APP_VERSION = chrome.runtime.getManifest().version;
+
 const state = {
   activeSessionTabId: null,
   session: null,
@@ -22,8 +24,10 @@ const state = {
   hideQueuedFromCaptured: true,
   activeTypeFilters: new Set(),
   helpOpen: false,
+  aboutOpen: false,
 };
 
+const aboutButton = document.querySelector("#about-button");
 const helpButton = document.querySelector("#help-button");
 const refreshButton = document.querySelector("#refresh-button");
 const clearButton = document.querySelector("#clear-button");
@@ -47,6 +51,7 @@ const clearQueueButton = document.querySelector("#clear-queue-button");
 
 const settingsStatusElement = document.querySelector("#settings-status");
 const settingsSummaryElement = document.querySelector("#settings-summary");
+const recorderVersionElement = document.querySelector("#recorder-version");
 const sessionStatusElement = document.querySelector("#session-status");
 const sessionTitleElement = document.querySelector("#session-title");
 const sessionUrlElement = document.querySelector("#session-url");
@@ -58,6 +63,8 @@ const queueSummaryElement = document.querySelector("#queue-summary");
 const selectionSummaryElement = document.querySelector("#selection-summary");
 const queueViewSummaryElement = document.querySelector("#queue-view-summary");
 const errorBannerElement = document.querySelector("#error-banner");
+const aboutPanelElement = document.querySelector("#about-panel");
+const aboutVersionElement = document.querySelector("#about-version");
 const helpPanelElement = document.querySelector("#help-panel");
 const resultTypeFilterBarElement = document.querySelector("#result-type-filter-bar");
 const capturedViewElement = document.querySelector("#captured-view");
@@ -84,9 +91,20 @@ const detailResponseHeadersElement = document.querySelector("#detail-response-he
 const detailRequestBodyElement = document.querySelector("#detail-request-body");
 const detailResponseBodyElement = document.querySelector("#detail-response-body");
 
+aboutButton.addEventListener("click", () => {
+  state.aboutOpen = !state.aboutOpen;
+  if (state.aboutOpen) {
+    state.helpOpen = false;
+  }
+  renderInfoPanels();
+});
+
 helpButton.addEventListener("click", () => {
   state.helpOpen = !state.helpOpen;
-  renderHelpPanel();
+  if (state.helpOpen) {
+    state.aboutOpen = false;
+  }
+  renderInfoPanels();
 });
 refreshButton.addEventListener("click", () => void refresh());
 clearButton.addEventListener("click", () => void clearSession());
@@ -231,15 +249,19 @@ function syncSelection() {
 function render(errorMessage) {
   renderOverview(errorMessage);
   renderSettings();
-  renderHelpPanel();
+  renderInfoPanels();
   renderWorkspace();
   renderDrawer();
   updateButtons();
 }
 
-function renderHelpPanel() {
+function renderInfoPanels() {
+  recorderVersionElement.textContent = `版本 v${APP_VERSION}`;
+  aboutVersionElement.textContent = `v${APP_VERSION}`;
+  aboutPanelElement.classList.toggle("hidden", !state.aboutOpen);
   helpPanelElement.classList.toggle("hidden", !state.helpOpen);
   helpButton.textContent = state.helpOpen ? "收起帮助" : "帮助";
+  aboutButton.textContent = state.aboutOpen ? "收起关于" : "关于";
 }
 
 function renderOverview(errorMessage) {

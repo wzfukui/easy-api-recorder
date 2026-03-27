@@ -45,6 +45,26 @@ h1 {
   line-height: 1.02;
 }
 
+.hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.version-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(139, 87, 40, 0.12);
+  color: #7b4f24;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .description,
 .fold-copy {
   margin: 8px 0 0;
