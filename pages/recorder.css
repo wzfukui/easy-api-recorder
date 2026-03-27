@@ -156,6 +156,10 @@ h2 {
   gap: 12px;
 }
 
+.about-grid .repo-card {
+  grid-column: span 2;
+}
+
 .help-card {
   display: grid;
   gap: 6px;
@@ -164,6 +168,10 @@ h2 {
   background: #f7efe2;
   color: #5d5145;
   line-height: 1.6;
+}
+
+.repo-link {
+  word-break: break-all;
 }
 
 .overview-card {
@@ -745,6 +753,10 @@ h2 {
   .resource-type-grid,
   .detail-summary {
     grid-template-columns: 1fr;
+  }
+
+  .about-grid .repo-card {
+    grid-column: auto;
   }
 
   .search-field {

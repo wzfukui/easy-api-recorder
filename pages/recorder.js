@@ -8,6 +8,7 @@ import {
 } from "../lib/shared.js";
 
 const APP_VERSION = chrome.runtime.getManifest().version;
+const PROJECT_URL = "https://github.com/wzfukui/easy-api-recorder";
 
 const state = {
   activeSessionTabId: null,
@@ -28,6 +29,7 @@ const state = {
 };
 
 const aboutButton = document.querySelector("#about-button");
+const githubButton = document.querySelector("#github-button");
 const helpButton = document.querySelector("#help-button");
 const refreshButton = document.querySelector("#refresh-button");
 const clearButton = document.querySelector("#clear-button");
@@ -64,6 +66,7 @@ const selectionSummaryElement = document.querySelector("#selection-summary");
 const queueViewSummaryElement = document.querySelector("#queue-view-summary");
 const errorBannerElement = document.querySelector("#error-banner");
 const aboutPanelElement = document.querySelector("#about-panel");
+const aboutRepoUrlElement = document.querySelector("#about-repo-url");
 const aboutVersionElement = document.querySelector("#about-version");
 const helpPanelElement = document.querySelector("#help-panel");
 const resultTypeFilterBarElement = document.querySelector("#result-type-filter-bar");
@@ -98,6 +101,8 @@ aboutButton.addEventListener("click", () => {
   }
   renderInfoPanels();
 });
+
+githubButton.addEventListener("click", () => void openProjectRepo());
 
 helpButton.addEventListener("click", () => {
   state.helpOpen = !state.helpOpen;
@@ -258,10 +263,21 @@ function render(errorMessage) {
 function renderInfoPanels() {
   recorderVersionElement.textContent = `版本 v${APP_VERSION}`;
   aboutVersionElement.textContent = `v${APP_VERSION}`;
+  aboutRepoUrlElement.textContent = PROJECT_URL;
   aboutPanelElement.classList.toggle("hidden", !state.aboutOpen);
   helpPanelElement.classList.toggle("hidden", !state.helpOpen);
   helpButton.textContent = state.helpOpen ? "收起帮助" : "帮助";
   aboutButton.textContent = state.aboutOpen ? "收起关于" : "关于";
+}
+
+async function openProjectRepo() {
+  try {
+    await chrome.tabs.create({
+      url: PROJECT_URL,
+    });
+  } catch {
+    window.open(PROJECT_URL, "_blank", "noopener");
+  }
 }
 
 function renderOverview(errorMessage) {
