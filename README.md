@@ -50,11 +50,14 @@
 
 ### 1. 加载扩展
 
-1. 打开 `chrome://extensions`
-2. 打开右上角 `开发者模式`
-3. 点击 `加载已解压的扩展程序`
-4. 选择当前目录：
-   `/opt/code/chris/SuperBody/dev/easy-api-recorder`
+1. 打开项目 GitHub 首页
+2. 点击右上角 `Code`
+3. 选择 `Download ZIP`
+4. 把下载的压缩包解压到本地目录
+5. 打开 `chrome://extensions`
+6. 打开右上角 `开发者模式`
+7. 点击 `加载已解压的扩展程序`
+8. 选择刚刚解压出来的项目目录
 
 ### 2. 开始录制
 
