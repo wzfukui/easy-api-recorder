@@ -64,7 +64,7 @@ chrome.debugger.onDetach.addListener((source, reason) => {
   session.updatedAt = new Date().toISOString();
   state.activeSessionTabId = state.activeSessionTabId === source.tabId ? null : state.activeSessionTabId;
   state.lastError =
-    !isExpected && reason && reason !== "target_closed" ? `调试器已断开：${reason}` : "";
+    !isExpected && reason && reason !== "target_closed" ? `记录已中断：${reason}` : "";
   schedulePersist();
   notifyStateChanged(source.tabId);
 });
@@ -133,7 +133,7 @@ function createEmptySession(tab) {
   return {
     sessionId: createSessionId(tab.id),
     tabId: tab.id,
-    title: tab.title || "未命名标签页",
+    title: tab.title || "未命名页面",
     url: tab.url || "",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -305,7 +305,7 @@ function getExportPayload(tabId, requestIds = [], format = "json") {
   const session = getSession(tabId);
 
   if (!session) {
-    throw new Error("当前没有可导出的会话。");
+    throw new Error("现在还没有可导出的记录。");
   }
 
   syncExportQueue(session);
@@ -314,10 +314,10 @@ function getExportPayload(tabId, requestIds = [], format = "json") {
   const entries = session.entries.filter((entry) => !idSet || idSet.has(entry.entryId));
 
   if (entries.length === 0) {
-    throw new Error("没有可导出的条目。");
+    throw new Error("没有找到可导出的条目。");
   }
 
-  const safeTitle = session.title.replace(/[^\w.-]+/g, "_").slice(0, 60) || "会话";
+  const safeTitle = session.title.replace(/[^\w.-]+/g, "_").slice(0, 60) || "recording";
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 
   if (format === "har") {
@@ -370,7 +370,7 @@ function updateCapturePreferences(preferencesPatch = {}) {
 
 async function startRecording(tabId) {
   if (typeof tabId !== "number") {
-    throw new Error("需要有效的 tabId。");
+    throw new Error("没有拿到当前页面，请重试。");
   }
 
   const tab = await chrome.tabs.get(tabId);
@@ -427,7 +427,7 @@ async function startRecording(tabId) {
 
 async function stopRecording(tabId, options = {}) {
   if (typeof tabId !== "number") {
-    throw new Error("需要有效的 tabId。");
+    throw new Error("没有拿到当前页面，请重试。");
   }
 
   const session = getSession(tabId);
@@ -465,7 +465,7 @@ async function stopRecording(tabId, options = {}) {
 
 async function clearSession(tabId) {
   if (typeof tabId !== "number") {
-    throw new Error("需要有效的 tabId。");
+    throw new Error("没有拿到当前页面，请重试。");
   }
 
   if (state.activeSessionTabId === tabId) {
@@ -483,7 +483,7 @@ async function clearSession(tabId) {
 function addToExportQueue(tabId, entryIds = []) {
   const session = getSession(tabId);
   if (!session) {
-    throw new Error("当前没有可用会话。");
+    throw new Error("当前页面还没有记录。");
   }
 
   const validEntryIds = new Set(session.entries.map((entry) => entry.entryId));
@@ -508,7 +508,7 @@ function addToExportQueue(tabId, entryIds = []) {
 function removeFromExportQueue(tabId, entryIds = []) {
   const session = getSession(tabId);
   if (!session) {
-    throw new Error("当前没有可用会话。");
+    throw new Error("当前页面还没有记录。");
   }
 
   const removeSet = new Set(entryIds);
@@ -525,7 +525,7 @@ function removeFromExportQueue(tabId, entryIds = []) {
 function clearExportQueue(tabId) {
   const session = getSession(tabId);
   if (!session) {
-    throw new Error("当前没有可用会话。");
+    throw new Error("当前页面还没有记录。");
   }
 
   session.exportQueueEntryIds = [];
@@ -545,7 +545,7 @@ function deleteEntry(tabId, entryId) {
 function deleteEntries(tabId, entryIds = []) {
   const session = getSession(tabId);
   if (!session) {
-    throw new Error("当前没有可用会话。");
+    throw new Error("当前页面还没有记录。");
   }
 
   const deleteSet = new Set(entryIds);

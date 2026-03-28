@@ -64,8 +64,8 @@ function render() {
       : null;
 
   popupVersionElement.textContent = `版本 v${APP_VERSION}`;
-  tabTitleElement.textContent = currentTab?.title || "当前没有活动标签页";
-  recordingStatusElement.textContent = currentSession?.isRecording ? "录制中" : "空闲";
+  tabTitleElement.textContent = currentTab?.title || "没有找到可记录的页面";
+  recordingStatusElement.textContent = currentSession?.isRecording ? "记录中" : "待开始";
   entryCountElement.textContent = String(currentSession?.entryCount || 0);
   scopeSummaryElement.textContent = summarizeEnabledResourceTypes(state.capturePreferences);
   scopeDetailElement.textContent = summarizeEnabledResourceTypes(state.capturePreferences, 8);
@@ -91,7 +91,7 @@ async function startRecording() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "启动录制失败。");
+      throw new Error(response.error || "开始记录失败，请重试。");
     }
 
     await refresh();
@@ -116,7 +116,7 @@ async function stopRecording() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "停止录制失败。");
+      throw new Error(response.error || "结束记录失败，请重试。");
     }
 
     await refresh();

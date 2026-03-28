@@ -13,47 +13,47 @@
         <div class="hero">
           <div>
             <div class="hero-head">
-              <h1>当前标签抓包</h1>
-              <span id="popup-version" class="version-chip">版本 v0.1.9</span>
+              <h1>开始记录当前页面</h1>
+              <span id="popup-version" class="version-chip">版本 v0.1.10</span>
             </div>
             <p class="description">
-              从这里快速开始录制。抓包范围和 URL 规则统一在结果页里配置，这里只保留高频操作。
+              点“开始记录”，回到业务页面操作一遍，再来结果页挑出要导出的请求。
             </p>
           </div>
         </div>
 
         <section class="tab-card">
           <div class="tab-card-head">
-            <span class="mini-label">标签页</span>
-            <span id="recording-status" class="status-pill">空闲</span>
+            <span class="mini-label">当前页面</span>
+            <span id="recording-status" class="status-pill">待开始</span>
           </div>
-          <div id="tab-title" class="tab-title">加载中...</div>
+          <div id="tab-title" class="tab-title">正在读取当前页面...</div>
           <div class="meta-row">
             <div class="meta-chip">
-              <span class="mini-label">条目数</span>
+              <span class="mini-label">已记录</span>
               <strong id="entry-count">0</strong>
             </div>
             <div class="meta-chip">
-              <span class="mini-label">范围</span>
-              <strong id="scope-summary">加载中...</strong>
+              <span class="mini-label">记录范围</span>
+              <strong id="scope-summary">读取中...</strong>
             </div>
           </div>
         </section>
 
         <details class="scope-fold">
-          <summary>当前抓包范围</summary>
+          <summary>这次会记录什么？</summary>
           <p class="fold-copy">
-            完整抓包配置统一在结果页里管理。当前范围：
-            <span id="scope-detail">加载中...</span>
+            详细的记录范围和 URL 规则都在结果页里改。当前会记录：
+            <span id="scope-detail">读取中...</span>
           </p>
         </details>
 
         <p id="error-text" class="error hidden"></p>
 
         <div class="actions">
-          <button id="start-button" class="primary">开始录制</button>
-          <button id="stop-button">停止</button>
-          <button id="open-button">打开结果页</button>
+          <button id="start-button" class="primary">开始记录</button>
+          <button id="stop-button">结束记录</button>
+          <button id="open-button">查看结果</button>
         </div>
       </section>
     </main>

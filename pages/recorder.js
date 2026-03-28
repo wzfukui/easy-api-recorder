@@ -311,15 +311,15 @@ function renderOverview(errorMessage) {
   const session = state.session;
   const queueEntries = getQueueEntries();
 
-  sessionStatusElement.textContent = session?.isRecording ? "录制中" : "空闲";
-  sessionTitleElement.textContent = session?.title || "暂无会话";
+  sessionStatusElement.textContent = session?.isRecording ? "记录中" : "待开始";
+  sessionTitleElement.textContent = session?.title || "还没有记录";
   sessionUrlElement.textContent = session?.url || "-";
   sessionCountElement.textContent = String(session?.entries?.length || 0);
   sessionUpdatedElement.textContent = session?.updatedAt
     ? new Date(session.updatedAt).toLocaleString()
     : "-";
   queueCountElement.textContent = String(queueEntries.length);
-  queueSummaryElement.textContent = queueEntries.length > 0 ? `待导出 ${queueEntries.length} 条` : "队列为空";
+  queueSummaryElement.textContent = queueEntries.length > 0 ? `已加入 ${queueEntries.length} 条` : "还没加入条目";
 
   errorBannerElement.textContent = errorMessage;
   errorBannerElement.classList.toggle("hidden", !errorMessage);
@@ -340,7 +340,7 @@ function renderSettings() {
   }
 
   binaryBodiesCheckbox.checked = Boolean(state.draftPreferences.captureBinaryBodies);
-  settingsStatusElement.textContent = state.settingsDirty ? "未保存" : "已保存";
+  settingsStatusElement.textContent = state.settingsDirty ? "待保存" : "设置已生效";
   settingsSummaryElement.textContent = buildSettingsSummary();
 }
 
@@ -348,7 +348,7 @@ function buildSettingsSummary() {
   const includeCount = state.savedPreferences.includeRules.length;
   const excludeCount = state.savedPreferences.excludeRules.length;
   const scope = summarizeEnabledResourceTypes(state.savedPreferences, 5);
-  return `${scope} | 包含 ${includeCount} 条 | 排除 ${excludeCount} 条 | 以排除为准`;
+  return `${scope} | 保留 ${includeCount} 条 | 跳过 ${excludeCount} 条`;
 }
 
 function renderWorkspace() {
@@ -409,8 +409,8 @@ function renderTabs() {
   queueTabCountElement.textContent = String(queueEntries.length);
   visibleCountElement.textContent =
     state.activeListTab === "captured"
-      ? `可见 ${capturedEntries.length} 条`
-      : `队列中可见 ${queueEntries.length} 条`;
+      ? `当前显示 ${capturedEntries.length} 条`
+      : `当前显示 ${queueEntries.length} 条`;
 }
 
 function renderCapturedList() {
@@ -418,7 +418,7 @@ function renderCapturedList() {
   requestListElement.textContent = "";
 
   if (!state.session?.entries?.length) {
-    requestListElement.append(createEmptyState("还没有抓到任何请求。请先在弹窗里开始录制，走完目标流程后再回到这里查看。"));
+    requestListElement.append(createEmptyState("现在还没有记录到请求。先回到页面操作一遍，再回来筛选。"));
     selectionSummaryElement.textContent = "已选 0 条";
     selectAllCheckbox.checked = false;
     selectAllCheckbox.indeterminate = false;
@@ -427,8 +427,8 @@ function renderCapturedList() {
 
   if (visibleEntries.length === 0) {
     const message = state.hideQueuedFromCaptured && getQueueEntries().length > 0
-      ? "当前没有匹配搜索条件的抓包记录，或者匹配到的条目都已经加入导出队列。"
-      : "当前没有匹配搜索条件的抓包记录。";
+      ? "没有找到符合条件的记录，或者它们已经被你加入待导出了。"
+      : "没有找到符合条件的记录。";
     requestListElement.append(createEmptyState(message));
     selectionSummaryElement.textContent = "已选 0 条";
     selectAllCheckbox.checked = false;
@@ -452,8 +452,8 @@ function renderQueueList() {
   queueListElement.textContent = "";
 
   if (queueEntries.length === 0) {
-    queueListElement.append(createEmptyState("导出队列还是空的。你可以先在“已抓取”列表里挑选条目，再加入导出队列。"));
-    queueViewSummaryElement.textContent = "队列为空";
+    queueListElement.append(createEmptyState("待导出还是空的。先在“全部记录”里勾选，再加入待导出。"));
+    queueViewSummaryElement.textContent = "还没加入条目";
     return;
   }
 
@@ -519,7 +519,7 @@ function createQueueRow(entry) {
 
   const badge = document.createElement("div");
   badge.className = "chip";
-  badge.textContent = "已入队";
+  badge.textContent = "待导出";
 
   const main = document.createElement("div");
   main.className = "request-main";
@@ -527,7 +527,7 @@ function createQueueRow(entry) {
 
   const removeButton = document.createElement("button");
   removeButton.className = "queue-remove";
-  removeButton.textContent = "移出队列";
+  removeButton.textContent = "移出待导出";
   removeButton.addEventListener("click", (event) => {
     event.stopPropagation();
     void removeFromQueue(entry.entryId);
@@ -551,13 +551,13 @@ function buildRowMarkup(entry, queued) {
       <span class="chip">${entry.method || "-"}</span>
       <span class="chip type">${typeLabel}</span>
       <span class="status-pill ${statusClass(entry.status, entry.failed)}">${formatStatus(entry)}</span>
-      ${queued ? '<span class="chip">队列中</span>' : ""}
+      ${queued ? '<span class="chip">待导出</span>' : ""}
     </div>
     <div class="request-url">${escapeHtml(entry.url || "-")}</div>
     <div class="request-meta">
-      <span>${entry.mimeType || "未知 MIME"}</span>
-      <span>${entry.durationMs != null ? `${entry.durationMs} ms` : "等待中"}</span>
-      <span>${entry.responseBody?.base64Encoded ? "二进制内容" : "文本或无响应体"}</span>
+      <span>${entry.mimeType || "MIME 未知"}</span>
+      <span>${entry.durationMs != null ? `${entry.durationMs} ms` : "处理中"}</span>
+      <span>${entry.responseBody?.base64Encoded ? "二进制" : "文本 / 空响应"}</span>
     </div>
   `;
 }
@@ -576,8 +576,8 @@ function renderDrawer() {
     detailDrawerElement.classList.remove("open");
     detailDrawerElement.setAttribute("aria-hidden", "true");
     drawerScrimElement.classList.add("hidden");
-    detailTitleElement.textContent = "未选择条目";
-    detailSubtitleElement.textContent = "请先从列表里选择一条请求。";
+    detailTitleElement.textContent = "还没选中记录";
+    detailSubtitleElement.textContent = "先从左边点一条记录，再看这次请求的详细内容。";
     emptyDetailElement.classList.remove("hidden");
     detailPanelElement.classList.add("hidden");
     return;
@@ -702,7 +702,7 @@ async function applySettings(preferencesOverride = null) {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "更新抓包设置失败。");
+      throw new Error(response.error || "保存记录设置失败，请重试。");
     }
 
     syncDraftPreferences(nextPreferences);
@@ -734,7 +734,7 @@ async function clearSession() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "清空会话失败。");
+      throw new Error(response.error || "清空当前记录失败，请重试。");
     }
 
     state.selectedIds.clear();
@@ -758,7 +758,7 @@ async function addSelectionToQueue() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "加入导出队列失败。");
+      throw new Error(response.error || "加入待导出失败，请重试。");
     }
 
     state.selectedIds.clear();
@@ -781,7 +781,7 @@ async function removeFromQueue(entryId) {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "移出导出队列失败。");
+      throw new Error(response.error || "移出待导出失败，请重试。");
     }
 
     await refresh();
@@ -802,7 +802,7 @@ async function clearQueue() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "清空导出队列失败。");
+      throw new Error(response.error || "清空待导出失败，请重试。");
     }
 
     await refresh();
@@ -817,7 +817,7 @@ async function deleteSelectedEntries() {
   }
 
   const targetEntryIds = [...state.selectedIds];
-  const confirmed = window.confirm(`确认从当前会话中删除已选的 ${targetEntryIds.length} 条抓包记录吗？`);
+  const confirmed = window.confirm(`确认删除这 ${targetEntryIds.length} 条记录吗？`);
   if (!confirmed) {
     return;
   }
@@ -830,7 +830,7 @@ async function deleteSelectedEntries() {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || "删除选中的抓包记录失败。");
+      throw new Error(response.error || "删除记录失败，请重试。");
     }
 
     for (const entryId of targetEntryIds) {
@@ -864,7 +864,7 @@ async function exportEntries(format, mode) {
     });
 
     if (!response.ok) {
-      throw new Error(response.error || `导出 ${format.toUpperCase()} 失败。`);
+      throw new Error(response.error || `导出 ${format.toUpperCase()} 失败，请重试。`);
     }
 
     const blob = new Blob([JSON.stringify(response.content, null, 2)], {
@@ -943,7 +943,7 @@ function getTypeTheme(resourceType) {
 
 function formatHeaders(headers = []) {
   if (!headers.length) {
-    return "// 未捕获到头信息";
+    return "// 这里还没有拿到头信息";
   }
 
   return headers.map((header) => `${header.name}: ${header.value}`).join("\n");
@@ -952,8 +952,8 @@ function formatHeaders(headers = []) {
 function formatBody(body, phase) {
   if (!body?.text) {
     return phase === "response"
-      ? "// 未捕获到响应体。这可能表示内容为空、未开启二进制响应体抓取，或者当前响应不支持读取。"
-      : "// 未捕获到请求体";
+      ? "// 这里还没有拿到响应体。可能是内容为空、没开启二进制记录，或者当前响应不支持读取。"
+      : "// 这里还没有拿到请求体";
   }
 
   const size = formatBytes(body.originalLength || body.text.length);
@@ -974,7 +974,7 @@ function formatStatus(entry) {
     return `${entry.status} ${entry.statusText || ""}`.trim();
   }
 
-  return "等待中";
+  return "处理中";
 }
 
 function getResourceTypeLabel(resourceType) {
